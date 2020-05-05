@@ -29,6 +29,7 @@ body {
   border-radius: 50%;
   text-align: center;
   padding: 1rem;
+  line-height: 3rem;
 }
 
 .cell[data-color="empty"] {
