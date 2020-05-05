@@ -1,0 +1,41 @@
+html,
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#app {
+  background-color: antiquewhite;
+  margin: 0 auto;
+  width: 70%;
+}
+
+#board {
+  padding: 1rem;
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: repeat(7, fit-content(60%));
+  grid-template-rows: repeat(6, 1fr);
+  grid-column-gap: 2px;
+  grid-row-gap: 4px;
+}
+
+.cell {
+  width: 3rem;
+  height: 3rem;
+  border: 1px solid black;
+  border-radius: 50%;
+  text-align: center;
+  padding: 1rem;
+}
+
+.cell[data-color="empty"] {
+}
+.cell[data-color="red"] {
+  background-color: red;
+}
+.cell[data-color="blue"] {
+  background-color: blue;
+}
