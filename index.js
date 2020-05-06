@@ -56,7 +56,6 @@ function updateUI() {
 
 function check_board() {
   console.log("checking the board...");
-  console.time("checking board");
 
   // 0 = unchecked
   // 1 = board full
@@ -76,13 +75,57 @@ function check_board() {
     let c_index = Math.floor(i % COLS);
     let r_index = Math.floor(i / COLS);
     // console.log(`index: ${i}, r: ${r_index}, c: ${c_index}, val: ${val}`);
+
+    let connetion_found = false;
+    // check only 3 of the top rows for vertical connections
+    if (r_index < 3) {
+      connection_found = isFourConnectedVertically(val, c_index, r_index);
+      if (connetion_found) {
+        if (val === "red") {
+          return 2;
+        } else {
+          return 3;
+        }
+      }
+    }
+
+    // check only the first 4 columns for horizontal connections
+    if (c_index < 4) {
+      connetion_found = isFourConnectedHorizontally(val, i);
+      if (connetion_found) {
+        if (val === "red") {
+          return 2;
+        } else {
+          return 3;
+        }
+      }
+    }
   }
 
-  console.timeEnd("checking board");
   if (!empty_found) {
     board_state = 1;
   }
   return board_state;
+}
+
+function isFourConnectedHorizontally(val, index) {
+  // get the three next values from the same line
+  let vals = [];
+  vals.push(val);
+  for (let i = index + 1; i < index + 4; i++) {
+    vals.push(cells[i]);
+  }
+
+  // check if the values are the same
+  let valsSet = new Set(vals);
+  return valsSet.size === 1;
+}
+
+function isFourConnectedVertically(val, c, r) {
+  // get the three next values from the same column
+
+  // check if the values are the same
+  return false;
 }
 
 function toggle_cell_color(r, c) {
