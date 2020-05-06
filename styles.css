@@ -9,7 +9,10 @@ body {
 #app {
   background-color: antiquewhite;
   margin: 0 auto;
-  width: 70%;
+  width: 90%;
+  display: grid;
+  grid-template-columns: 2fr 8fr 2fr;
+  grid-column-gap: 2px;
 }
 
 #board {
@@ -32,8 +35,6 @@ body {
   line-height: 3rem;
 }
 
-.cell[data-color="empty"] {
-}
 .cell[data-color="red"] {
   background-color: red;
 }
