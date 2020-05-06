@@ -107,6 +107,31 @@ function check_board() {
     // console.log(`index: ${i}, r: ${r_index}, c: ${c_index}, val: ${val}`);
 
     let connection_found = false;
+    // diagonal checks
+
+    // the possible diagonals are limited
+    if (c_index < 4 && r_index < 3) {
+      connection_found = isFourConnectedDiagonallyDown(i);
+      if (connection_found) {
+        if (val === "red") {
+          return 2;
+        } else {
+          return 3;
+        }
+      }
+    }
+
+    if (c_index < 4 && r_index > 2) {
+      connection_found = isFourConnectedDiagonallyUp(i);
+      if (connection_found) {
+        if (val === "red") {
+          return 2;
+        } else {
+          return 3;
+        }
+      }
+    }
+
     // check only 3 of the top rows for vertical connections
     if (r_index < 3) {
       connection_found = isFourConnectedVertically(val, i);
@@ -136,6 +161,36 @@ function check_board() {
     board_state = 1;
   }
   return board_state;
+}
+
+function isFourConnectedDiagonallyDown(index) {
+  // the next index is always 8 away (ie. 0, 8, 16, 24)
+  let vals = [];
+
+  while (vals.length < 4) {
+    let v = cells[index];
+    vals.push(v);
+    index += COLS + 1;
+  }
+
+  // check if the values are the same
+  let valsSet = new Set(vals);
+  return valsSet.size === 1;
+}
+
+function isFourConnectedDiagonallyUp(index) {
+  // the previous index is always 6 behind (ie. 35, 29, 23, 17)
+  let vals = [];
+
+  while (vals.length < 4) {
+    let v = cells[index];
+    vals.push(v);
+    index -= COLS - 1;
+  }
+
+  // check if the values are the same
+  let valsSet = new Set(vals);
+  return valsSet.size === 1;
 }
 
 function isFourConnectedHorizontally(val, index) {
