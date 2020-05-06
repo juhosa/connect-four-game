@@ -12,8 +12,9 @@ body {
   margin-top: 2rem;
   width: 90%;
   display: grid;
-  grid-template-columns: 2fr 8fr 2fr;
+  grid-template-columns: 2fr fit-content(100%) 2fr;
   grid-column-gap: 2px;
+  padding-bottom: 1rem;
 }
 
 #left {
@@ -29,6 +30,10 @@ body {
   grid-template-rows: repeat(6, 1fr);
   grid-column-gap: 2px;
   grid-row-gap: 4px;
+
+  border: 1px solid gray;
+  border-radius: 5px;
+  background-color: tomato;
 }
 
 .cell {
@@ -39,6 +44,7 @@ body {
   text-align: center;
   padding: 1rem;
   line-height: 3rem;
+  background-color: antiquewhite;
 }
 
 .cell[data-color="red"] {
@@ -46,4 +52,8 @@ body {
 }
 .cell[data-color="blue"] {
   background-color: blue;
+}
+
+.cell[data-toprow="true"] {
+  border-width: 2px;
 }

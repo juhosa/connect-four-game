@@ -183,14 +183,15 @@ function create_board() {
     d.setAttribute("data-color", cells[i]);
 
     if (i >= 0 && i < COLS) {
+      d.setAttribute("data-toprow", "true");
       d.addEventListener("click", (e) => {
         // console.dir(e.target.id);
         cell_clicked(e.target.id);
       });
     }
 
-    let t = document.createTextNode(i);
-    d.appendChild(t);
+    // let t = document.createTextNode(i);
+    // d.appendChild(t);
 
     board.appendChild(d);
   }
