@@ -182,7 +182,7 @@ function create_board() {
     d.setAttribute("id", `cell_${i}`);
     d.setAttribute("data-color", cells[i]);
 
-    if (i >= 0 && i <= ROWS) {
+    if (i >= 0 && i < COLS) {
       d.addEventListener("click", (e) => {
         // console.dir(e.target.id);
         cell_clicked(e.target.id);
