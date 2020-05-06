@@ -5,6 +5,7 @@ const ROWS = 6;
 let player = "red";
 let game_over = false;
 
+let games = 0;
 let wins_red = 0;
 let wins_blue = 0;
 
@@ -68,6 +69,7 @@ function cell_clicked(index) {
       setMessage("Blue won!");
       wins_blue++;
     }
+    games++;
   }
 
   updateUI();
@@ -80,8 +82,20 @@ function setMessage(msg) {
 function updateUI() {
   document.querySelector("#player_span").innerText = player;
 
-  document.querySelector("#wins_red").innerText = wins_red;
-  document.querySelector("#wins_blue").innerText = wins_blue;
+  let red_percentage = 0;
+  let blue_percentage = 0;
+
+  if (games > 0) {
+    red_percentage = (wins_red / games) * 100;
+    blue_percentage = (wins_blue / games) * 100;
+  }
+
+  document.querySelector(
+    "#wins_red"
+  ).innerText = `${wins_red}/${games} (${parseInt(red_percentage)}%)`;
+  document.querySelector(
+    "#wins_blue"
+  ).innerText = `${wins_blue}/${games} (${parseInt(blue_percentage)}%)`;
 }
 
 function check_board() {
@@ -201,6 +215,7 @@ function init() {
   game_over = false;
   setMessage("");
   player = "red";
+  games = 0;
   wins_red = 0;
   wins_blue = 0;
 
