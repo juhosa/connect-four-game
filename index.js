@@ -158,7 +158,6 @@ function isFourConnectedVertically(val, index) {
   for (let i = index + COLS; i < index + 4 * COLS; i += COLS) {
     vals.push(cells[i]);
   }
-  console.log(vals);
 
   // check if the values are the same
   let valsSet = new Set(vals);
