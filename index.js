@@ -111,48 +111,31 @@ function check_board() {
 
     // the possible diagonals are limited
     if (c_index < 4 && r_index < 3) {
-      connection_found = isFourConnectedDiagonallyDown(i);
-      if (connection_found) {
-        if (val === "red") {
-          return 2;
-        } else {
-          return 3;
-        }
-      }
+      // the next index is always 8 away (ie. 0, 8, 16, 24)
+      connection_found = isFourConnected(i, COLS + 1);
     }
 
-    if (c_index < 4 && r_index > 2) {
-      connection_found = isFourConnectedDiagonallyUp(i);
-      if (connection_found) {
-        if (val === "red") {
-          return 2;
-        } else {
-          return 3;
-        }
-      }
+    if (c_index < 4 && r_index > 2 && !connection_found) {
+      // the previous index is always 6 behind (ie. 35, 29, 23, 17)
+      connection_found = isFourConnected(i, -(COLS - 1));
     }
 
     // check only 3 of the top rows for vertical connections
-    if (r_index < 3) {
-      connection_found = isFourConnectedVertically(val, i);
-      if (connection_found) {
-        if (val === "red") {
-          return 2;
-        } else {
-          return 3;
-        }
-      }
+    if (r_index < 3 && !connection_found) {
+      // different row, same columns is always COLS away
+      connection_found = isFourConnected(i, COLS);
     }
 
     // check only the first 4 columns for horizontal connections
-    if (c_index < 4) {
-      connection_found = isFourConnectedHorizontally(val, i);
-      if (connection_found) {
-        if (val === "red") {
-          return 2;
-        } else {
-          return 3;
-        }
+    if (c_index < 4 && !connection_found) {
+      // the next index is always one away
+      connection_found = isFourConnected(i, 1);
+    }
+    if (connection_found) {
+      if (val === "red") {
+        return 2;
+      } else {
+        return 3;
       }
     }
   }
@@ -163,55 +146,13 @@ function check_board() {
   return board_state;
 }
 
-function isFourConnectedDiagonallyDown(index) {
-  // the next index is always 8 away (ie. 0, 8, 16, 24)
+function isFourConnected(index, change) {
   let vals = [];
 
   while (vals.length < 4) {
     let v = cells[index];
     vals.push(v);
-    index += COLS + 1;
-  }
-
-  // check if the values are the same
-  let valsSet = new Set(vals);
-  return valsSet.size === 1;
-}
-
-function isFourConnectedDiagonallyUp(index) {
-  // the previous index is always 6 behind (ie. 35, 29, 23, 17)
-  let vals = [];
-
-  while (vals.length < 4) {
-    let v = cells[index];
-    vals.push(v);
-    index -= COLS - 1;
-  }
-
-  // check if the values are the same
-  let valsSet = new Set(vals);
-  return valsSet.size === 1;
-}
-
-function isFourConnectedHorizontally(val, index) {
-  // get the three next values from the same line
-  let vals = [];
-  vals.push(val);
-  for (let i = index + 1; i < index + 4; i++) {
-    vals.push(cells[i]);
-  }
-
-  // check if the values are the same
-  let valsSet = new Set(vals);
-  return valsSet.size === 1;
-}
-
-function isFourConnectedVertically(val, index) {
-  // get the three next values from the same column
-  let vals = [];
-  vals.push(val);
-  for (let i = index + COLS; i < index + 4 * COLS; i += COLS) {
-    vals.push(cells[i]);
+    index += change;
   }
 
   // check if the values are the same
