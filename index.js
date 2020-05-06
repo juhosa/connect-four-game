@@ -3,6 +3,7 @@ const COLS = 7;
 const ROWS = 6;
 
 let player = "red";
+let game_over = false;
 
 function get_column_values(c_index) {
   let tmp = [];
@@ -25,6 +26,9 @@ function find_last_empty_row(col_vals) {
 }
 
 function cell_clicked(index) {
+  if (game_over) {
+    return;
+  }
   let id = index.split("_")[1];
   //   console.log(`cell with id ${index} clicked. (Column ${id})`);
 
@@ -43,9 +47,16 @@ function cell_clicked(index) {
   // change player
   player = player === "red" ? "blue" : "red";
 
-  // check board for possible win
+  // check board
+  // 0 = still going
+  // 1 = board full
+  // 2 = red won
+  // 3 = blue won
   let is_over = check_board();
   console.log(`Is the game over: ${is_over}`);
+  if (is_over !== 0) {
+    game_over = true;
+  }
 
   updateUI();
 }
@@ -57,7 +68,7 @@ function updateUI() {
 function check_board() {
   console.log("checking the board...");
 
-  // 0 = unchecked
+  // 0 = still going
   // 1 = board full
   // 2 = red won
   // 3 = blue won
@@ -76,11 +87,11 @@ function check_board() {
     let r_index = Math.floor(i / COLS);
     // console.log(`index: ${i}, r: ${r_index}, c: ${c_index}, val: ${val}`);
 
-    let connetion_found = false;
+    let connection_found = false;
     // check only 3 of the top rows for vertical connections
     if (r_index < 3) {
-      connection_found = isFourConnectedVertically(val, c_index, r_index);
-      if (connetion_found) {
+      connection_found = isFourConnectedVertically(val, i);
+      if (connection_found) {
         if (val === "red") {
           return 2;
         } else {
@@ -91,8 +102,8 @@ function check_board() {
 
     // check only the first 4 columns for horizontal connections
     if (c_index < 4) {
-      connetion_found = isFourConnectedHorizontally(val, i);
-      if (connetion_found) {
+      connection_found = isFourConnectedHorizontally(val, i);
+      if (connection_found) {
         if (val === "red") {
           return 2;
         } else {
@@ -121,11 +132,18 @@ function isFourConnectedHorizontally(val, index) {
   return valsSet.size === 1;
 }
 
-function isFourConnectedVertically(val, c, r) {
+function isFourConnectedVertically(val, index) {
   // get the three next values from the same column
+  let vals = [];
+  vals.push(val);
+  for (let i = index + COLS; i < index + 4 * COLS; i += COLS) {
+    vals.push(cells[i]);
+  }
+  console.log(vals);
 
   // check if the values are the same
-  return false;
+  let valsSet = new Set(vals);
+  return valsSet.size === 1;
 }
 
 function toggle_cell_color(r, c) {
@@ -165,6 +183,9 @@ function create_board() {
 }
 
 function init() {
+  game_over = false;
+  player = "red";
+
   cells = [];
   for (let i = 0; i < ROWS * COLS; i++) {
     let c = "empty";
