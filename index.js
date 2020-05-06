@@ -5,6 +5,9 @@ const ROWS = 6;
 let player = "red";
 let game_over = false;
 
+let wins_red = 0;
+let wins_blue = 0;
+
 function get_column_values(c_index) {
   let tmp = [];
   for (let i = 0; i < ROWS; i++) {
@@ -56,13 +59,29 @@ function cell_clicked(index) {
   console.log(`Is the game over: ${is_over}`);
   if (is_over !== 0) {
     game_over = true;
+    if (is_over === 1) {
+      setMessage("Board full!");
+    } else if (is_over === 2) {
+      setMessage("Red won!");
+      wins_red++;
+    } else if (is_over === 3) {
+      setMessage("Blue won!");
+      wins_blue++;
+    }
   }
 
   updateUI();
 }
 
+function setMessage(msg) {
+  document.querySelector("#message").innerText = msg;
+}
+
 function updateUI() {
   document.querySelector("#player_span").innerText = player;
+
+  document.querySelector("#wins_red").innerText = wins_red;
+  document.querySelector("#wins_blue").innerText = wins_blue;
 }
 
 function check_board() {
@@ -184,7 +203,10 @@ function create_board() {
 
 function init() {
   game_over = false;
+  setMessage("");
   player = "red";
+  wins_red = 0;
+  wins_blue = 0;
 
   cells = [];
   for (let i = 0; i < ROWS * COLS; i++) {
@@ -194,6 +216,26 @@ function init() {
   //   cells[21] = "red";
   //   cells[28] = "red";
   //   cells[35] = "red";
+  create_board();
+  updateUI();
+
+  // attach event handlers
+  document.querySelector("#newgame_btn").addEventListener("click", new_game);
+}
+
+function new_game() {
+  console.log("Starting new game");
+  game_over = false;
+  setMessage("");
+  player = "red";
+
+  document.querySelector("#board").innerHTML = "";
+
+  cells = [];
+  for (let i = 0; i < ROWS * COLS; i++) {
+    let c = "empty";
+    cells.push(c);
+  }
   create_board();
   updateUI();
 }
