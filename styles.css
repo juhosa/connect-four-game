@@ -56,4 +56,5 @@ body {
 
 .cell[data-toprow="true"] {
   border-width: 2px;
+  cursor: pointer;
 }

@@ -1,13 +1,21 @@
-let cells = [];
 const COLS = 7;
 const ROWS = 6;
+const BOT_DELAY = 500;
+
+let cells = [];
+
+let game_started = false;
+let game_over = false;
 
 let player = "red";
-let game_over = false;
+let last_winner = "";
 
 let games = 0;
 let wins_red = 0;
 let wins_blue = 0;
+
+let player1 = undefined;
+let player2 = undefined;
 
 function get_column_values(c_index) {
   let tmp = [];
@@ -30,26 +38,22 @@ function find_last_empty_row(col_vals) {
 }
 
 function cell_clicked(index) {
-  if (game_over) {
+  if (game_over || !game_started) {
     return;
   }
   let id = index.split("_")[1];
   //   console.log(`cell with id ${index} clicked. (Column ${id})`);
 
   let col_vals = get_column_values(parseInt(id));
-  //   console.log(col_vals);
 
   let last_empty_row_index = find_last_empty_row(col_vals);
-  //   console.log(last_empty_row_index);
 
   if (last_empty_row_index === -1) {
+    nextPlayer();
     return;
   }
 
   toggle_cell_color(last_empty_row_index, parseInt(id));
-
-  // change player
-  player = player === "red" ? "blue" : "red";
 
   // check board
   // 0 = still going
@@ -57,22 +61,50 @@ function cell_clicked(index) {
   // 2 = red won
   // 3 = blue won
   let is_over = check_board();
-  console.log(`Is the game over: ${is_over}`);
+  // console.log(`Is the game over: ${is_over}`);
   if (is_over !== 0) {
     game_over = true;
     if (is_over === 1) {
       setMessage("Board full!");
     } else if (is_over === 2) {
       setMessage("Red won!");
+      last_winner = player;
       wins_red++;
     } else if (is_over === 3) {
       setMessage("Blue won!");
+      last_winner = player;
       wins_blue++;
     }
     games++;
+
+    if (player1.get_type() === "robot") {
+      new_game();
+      // player1.play_turn();
+      setTimeout(() => player1.play_turn(), BOT_DELAY);
+      updateUI();
+      return;
+    }
   }
 
   updateUI();
+
+  nextPlayer();
+}
+
+function nextPlayer() {
+  // change player
+  player = player === "red" ? "blue" : "red";
+
+  if (player === "red" && player1.get_type() === "robot") {
+    setTimeout(() => player1.play_turn(), BOT_DELAY);
+    // console.log("p1");
+  }
+
+  // blue is always player2
+  if (player === "blue" && player2.get_type() === "robot") {
+    setTimeout(() => player2.play_turn(), BOT_DELAY);
+    // console.log("p2");
+  }
 }
 
 function setMessage(msg) {
@@ -99,7 +131,7 @@ function updateUI() {
 }
 
 function check_board() {
-  console.log("checking the board...");
+  // console.log("checking the board...");
 
   // 0 = still going
   // 1 = board full
@@ -211,7 +243,16 @@ function create_board() {
   }
 }
 
+function get_gamestate() {
+  return {
+    board: cells,
+    game_over: game_over,
+    who_won: last_winner,
+  };
+}
+
 function init() {
+  console.log("Initializing");
   game_over = false;
   setMessage("");
   player = "red";
@@ -224,14 +265,47 @@ function init() {
     let c = "empty";
     cells.push(c);
   }
-  //   cells[21] = "red";
-  //   cells[28] = "red";
-  //   cells[35] = "red";
+
   create_board();
   updateUI();
 
   // attach event handlers
-  document.querySelector("#newgame_btn").addEventListener("click", new_game);
+  document
+    .querySelector("#newgame_btn")
+    .addEventListener("click", () => new_game());
+
+  document
+    .querySelector("#play_random_robot_btn")
+    .addEventListener("click", () => player2.play_turn());
+
+  document.querySelector("#start_btn").addEventListener("click", () => start());
+  document.querySelector("#pause_btn").addEventListener("click", () => pause());
+}
+
+function pause() {
+  game_over = !game_over;
+}
+
+function start() {
+  console.log("start");
+
+  let p1 = document.querySelector("#p1").selectedOptions[0].value;
+  let p2 = document.querySelector("#p2").selectedOptions[0].value;
+
+  let players_map = {
+    human: Human,
+    random_robot: RandomRobot,
+  };
+
+  player1 = new players_map[p1]();
+  player2 = new players_map[p2]();
+  game_started = true;
+
+  // if player1 is a bot, start the game
+  if (player1.get_type() === "robot") {
+    console.log("rooot");
+    player1.play_turn();
+  }
 }
 
 function new_game() {

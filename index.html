@@ -24,8 +24,33 @@
       <div id="board"></div>
 
       <!-- Rigth side -->
-      <div id="rigth"></div>
+      <div id="rigth">
+        <button id="play_random_robot_btn">play random robot</button>
+        <div>
+          <label for="p1">Player 1</label>
+          <select name="p1" id="p1">
+            <option value="human">Human</option>
+            <option value="random_robot">Random Robot</option>
+          </select>
+
+          <br />
+
+          <label for="p2">Player 2</label>
+          <select id="p2">
+            <option value="human">Human</option>
+            <option selected value="random_robot">Random Robot</option>
+          </select>
+
+          <br />
+
+          <button id="start_btn">start</button>
+          <button id="pause_btn">pause</button>
+        </div>
+      </div>
     </div>
-    <script src="index.js"></script>
+    <script src="random_robot.js"></script>
+    <script src="human.js"></script>
+    <script src="game.js"></script>
+    <script src="api.js"></script>
   </body>
 </html>
