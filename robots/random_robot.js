@@ -1,11 +1,6 @@
-class RandomRobot {
-  constructor(color) {
-    this.color = color;
-    this.state = undefined;
-  }
-
-  get_type() {
-    return "robot";
+class RandomRobot extends Robot {
+  constructor() {
+    super();
   }
 
   play_turn() {
