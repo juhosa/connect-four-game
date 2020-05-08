@@ -296,6 +296,7 @@ function start() {
     human: Human,
     random_robot: RandomRobot,
     optimistic_robot_1: OptimisticRobot1,
+    aggressive_robot_1: AggressiveRobot1,
   };
 
   player1 = new players_map[p1]("red");
