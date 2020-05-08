@@ -9,7 +9,7 @@ class OptimisticRobot1 extends Robot {
     let win_found = false;
     let col = -1;
 
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 7; i++) {
       let board = Array.from(current_state.board);
       let s = api.simulate_insert(board, i, this.color);
 
