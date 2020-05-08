@@ -14,6 +14,7 @@
         <h3>Wins:</h3>
         <div><span>Red:</span><span id="wins_red"></span></div>
         <div><span>Blue:</span><span id="wins_blue"></span></div>
+        <div><span>Ties:</span><span id="ties"></span></div>
 
         <div>
           <button id="newgame_btn">New game</button>
@@ -27,18 +28,20 @@
       <div id="rigth">
         <button id="play_random_robot_btn">play random robot</button>
         <div>
-          <label for="p1">Player 1</label>
+          <label for="p1">Red:</label>
           <select name="p1" id="p1">
             <option value="human">Human</option>
             <option value="random_robot">Random Robot</option>
+            <option value="optimistic_robot_1">Optimistic Robot 1</option>
           </select>
 
           <br />
 
-          <label for="p2">Player 2</label>
+          <label for="p2">Blue:</label>
           <select id="p2">
             <option value="human">Human</option>
             <option selected value="random_robot">Random Robot</option>
+            <option value="optimistic_robot_1">Optimistic Robot 1</option>
           </select>
 
           <br />
@@ -50,7 +53,7 @@
     </div>
     <script src="robots/robot.js"></script>
     <script src="robots/random_robot.js"></script>
-    <script src="robots/TfRoboV1.js"></script>
+    <script src="robots/optimistic_robot_1.js"></script>
     <script src="human.js"></script>
     <script src="game.js"></script>
     <script src="api.js"></script>

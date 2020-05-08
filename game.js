@@ -1,6 +1,6 @@
 const COLS = 7;
 const ROWS = 6;
-const BOT_DELAY = 500;
+const BOT_DELAY = 100;
 
 let cells = [];
 
@@ -13,6 +13,7 @@ let last_winner = "";
 let games = 0;
 let wins_red = 0;
 let wins_blue = 0;
+let ties = 0;
 
 let player1 = undefined;
 let player2 = undefined;
@@ -41,31 +42,30 @@ function cell_clicked(index) {
   if (game_over || !game_started) {
     return;
   }
-  let id = index.split("_")[1];
+  let col = parseInt(index.split("_")[1]);
   //   console.log(`cell with id ${index} clicked. (Column ${id})`);
 
-  let col_vals = get_column_values(parseInt(id));
-
-  let last_empty_row_index = find_last_empty_row(col_vals);
+  let last_empty_row_index = find_last_empty_row(get_column_values(col));
 
   if (last_empty_row_index === -1) {
     nextPlayer();
     return;
   }
 
-  toggle_cell_color(last_empty_row_index, parseInt(id));
+  toggle_cell_color(last_empty_row_index, col);
 
   // check board
   // 0 = still going
   // 1 = board full
   // 2 = red won
   // 3 = blue won
-  let is_over = check_board();
+  let is_over = check_board(cells);
   // console.log(`Is the game over: ${is_over}`);
   if (is_over !== 0) {
     game_over = true;
     if (is_over === 1) {
       setMessage("Board full!");
+      ties++;
     } else if (is_over === 2) {
       setMessage("Red won!");
       last_winner = player;
@@ -79,16 +79,14 @@ function cell_clicked(index) {
 
     if (player1.get_type() === "robot") {
       new_game();
-      // player1.play_turn();
       setTimeout(() => player1.play_turn(), BOT_DELAY);
       updateUI();
       return;
     }
   }
 
-  updateUI();
-
   nextPlayer();
+  updateUI();
 }
 
 function nextPlayer() {
@@ -114,6 +112,8 @@ function setMessage(msg) {
 function updateUI() {
   document.querySelector("#player_span").innerText = player;
 
+  document.querySelector("#ties").innerText = ties;
+
   let red_percentage = 0;
   let blue_percentage = 0;
 
@@ -130,7 +130,7 @@ function updateUI() {
   ).innerText = `${wins_blue}/${games} (${parseInt(blue_percentage)}%)`;
 }
 
-function check_board() {
+function check_board(board) {
   // console.log("checking the board...");
 
   // 0 = still going
@@ -140,14 +140,14 @@ function check_board() {
   let board_state = 0;
   let empty_found = false;
   // loop cells
-  for (let i = 0; i < cells.length; i++) {
+  for (let i = 0; i < board.length; i++) {
     // if empty, pass
-    if (cells[i] === "empty") {
+    if (board[i] === "empty") {
       empty_found = true;
       continue;
     }
 
-    let val = cells[i];
+    let val = board[i];
     let c_index = Math.floor(i % COLS);
     let r_index = Math.floor(i / COLS);
     // console.log(`index: ${i}, r: ${r_index}, c: ${c_index}, val: ${val}`);
@@ -158,24 +158,24 @@ function check_board() {
     // the possible diagonals are limited
     if (c_index < 4 && r_index < 3) {
       // the next index is always 8 away (ie. 0, 8, 16, 24)
-      connection_found = isFourConnected(i, COLS + 1);
+      connection_found = isFourConnected(board, i, COLS + 1);
     }
 
     if (c_index < 4 && r_index > 2 && !connection_found) {
       // the previous index is always 6 behind (ie. 35, 29, 23, 17)
-      connection_found = isFourConnected(i, -(COLS - 1));
+      connection_found = isFourConnected(board, i, -(COLS - 1));
     }
 
     // check only 3 of the top rows for vertical connections
     if (r_index < 3 && !connection_found) {
       // different row, same columns is always COLS away
-      connection_found = isFourConnected(i, COLS);
+      connection_found = isFourConnected(board, i, COLS);
     }
 
     // check only the first 4 columns for horizontal connections
     if (c_index < 4 && !connection_found) {
       // the next index is always one away
-      connection_found = isFourConnected(i, 1);
+      connection_found = isFourConnected(board, i, 1);
     }
     if (connection_found) {
       if (val === "red") {
@@ -192,11 +192,11 @@ function check_board() {
   return board_state;
 }
 
-function isFourConnected(index, change) {
+function isFourConnected(board, index, change) {
   let vals = [];
 
   while (vals.length < 4) {
-    let v = cells[index];
+    let v = board[index];
     vals.push(v);
     index += change;
   }
@@ -295,10 +295,11 @@ function start() {
   let players_map = {
     human: Human,
     random_robot: RandomRobot,
+    optimistic_robot_1: OptimisticRobot1,
   };
 
-  player1 = new players_map[p1]();
-  player2 = new players_map[p2]();
+  player1 = new players_map[p1]("red");
+  player2 = new players_map[p2]("blue");
   game_started = true;
 
   // if player1 is a bot, start the game

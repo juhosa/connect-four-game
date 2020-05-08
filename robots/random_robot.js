@@ -1,6 +1,6 @@
 class RandomRobot extends Robot {
-  constructor() {
-    super();
+  constructor(color) {
+    super(color);
   }
 
   play_turn() {

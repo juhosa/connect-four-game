@@ -1,4 +1,7 @@
 class Robot {
+  constructor(color) {
+    this.color = color;
+  }
   get_type() {
     return "robot";
   }
