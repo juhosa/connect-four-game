@@ -19,7 +19,7 @@ class AggressiveRobot1 extends Robot {
       let s = api.simulate_insert(board, i, enemy_color);
 
       if (s.game_over && s.who_won === enemy_color) {
-        console.log(
+        this.log(
           `Placing a button in col ${i} would result in enemy winning this round! BLOCK IT!`
         );
         win_found = true;

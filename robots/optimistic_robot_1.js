@@ -14,7 +14,7 @@ class OptimisticRobot1 extends Robot {
       let s = api.simulate_insert(board, i, this.color);
 
       if (s.game_over && s.who_won === this.color) {
-        console.log(`Placing a button in col ${i} wins me this round!`);
+        this.log(`Placing a button in col ${i} wins me this round!`);
         win_found = true;
         col = i;
         break;
