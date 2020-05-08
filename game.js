@@ -1,6 +1,6 @@
 const COLS = 7;
 const ROWS = 6;
-const BOT_DELAY = 100;
+const BOT_DELAY = 50;
 
 let cells = [];
 
@@ -297,6 +297,7 @@ function start() {
     random_robot: RandomRobot,
     optimistic_robot_1: OptimisticRobot1,
     aggressive_robot_1: AggressiveRobot1,
+    optimisticly_aggressive_robot_1: OptimisticlyAggressiveRobot1,
   };
 
   player1 = new players_map[p1]("red");
